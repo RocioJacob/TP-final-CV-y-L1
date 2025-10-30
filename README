@@ -1,0 +1,15 @@
+
+Sistema Bancario - archivo único (sistema_bancario.py)
+Implementa clases Cliente, Cuenta (y subclases), Transaccion, almacenamiento en memoria,
+interfaz básica con Flet y generación de PDF con FPDF.
+Requisitos: flet, fpdf
+Instalación (desde project root):
+  python -m venv venv
+  source venv/bin/activate   # linux / mac
+  venv\Scripts\activate.bat  # windows
+  pip install flet fpdf2
+
+Ejecución:
+  python sistema_bancario.py
+
+Nota: para tests con pytest se recomienda copiar las clases a src/models/*.py y crear tests/ separados.
