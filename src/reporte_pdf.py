@@ -36,5 +36,9 @@ class PDFGenerator:
                 pdf.cell(0, 6, f" - {tx.fecha.strftime('%Y-%m-%d %H:%M:%S')} {tx.tipo} {tx.monto:.2f}", ln=True)
             pdf.ln(4)
         pdf.cell(0, 6, f"Generado: {datetime.now().isoformat()}")
-        pdf.output(self.filename)
+        import os
+        directory = 'reportes'
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        pdf.output(os.path.join(directory, self.filename))
         return self.filename
