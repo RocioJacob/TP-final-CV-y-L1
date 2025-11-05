@@ -10,22 +10,25 @@ class ClienteListView:
         self.on_navigate = on_navigate
         self.mensaje = ft.Text(value="", color=ft.Colors.RED_700)
         
-        # Campos del formulario
-        self.nombre_input = ft.TextField(label="Nombre", width=200)
-        self.apellido_input = ft.TextField(label="Apellido", width=200)
-        self.dni_input = ft.TextField(label="DNI", width=150)
-        
-        # Tabla de clientes
+        # Campos del formulario más compactos
+        self.nombre_input = ft.TextField(label="Nombre", width=200, height=35, content_padding=ft.padding.all(5))
+        self.apellido_input = ft.TextField(label="Apellido", width=200, height=35, content_padding=ft.padding.all(5))
+        self.dni_input = ft.TextField(label="DNI", width=150, height=35, content_padding=ft.padding.all(5))
+
+        # Tabla de clientes compacta con padding visible
         self.tabla_clientes = ft.DataTable(
             columns=[
-                ft.DataColumn(ft.Text("DNI", weight=ft.FontWeight.BOLD)),
-                ft.DataColumn(ft.Text("Nombre", weight=ft.FontWeight.BOLD)),
-                ft.DataColumn(ft.Text("Apellido", weight=ft.FontWeight.BOLD)),
-                ft.DataColumn(ft.Text("Acciones", weight=ft.FontWeight.BOLD)),
+                ft.DataColumn(ft.Text("DNI", weight=ft.FontWeight.BOLD, size=12)),
+                ft.DataColumn(ft.Text("Nombre", weight=ft.FontWeight.BOLD, size=12)),
+                ft.DataColumn(ft.Text("Apellido", weight=ft.FontWeight.BOLD, size=12)),
+                ft.DataColumn(ft.Text("Acciones", weight=ft.FontWeight.BOLD, size=12)),
             ],
-            rows=[],
+            heading_row_height=32,
+            data_row_min_height=32,
+            data_row_max_height=38,
+            column_spacing=4,
             border=ft.border.all(1, ft.Colors.GREY_400),
-            border_radius=10,
+            border_radius=5,
             vertical_lines=ft.border.BorderSide(1, ft.Colors.GREY_300),
             horizontal_lines=ft.border.BorderSide(1, ft.Colors.GREY_300),
         )
@@ -62,18 +65,25 @@ class ClienteListView:
     def actualizar_tabla(self):
         """Actualiza la tabla con los clientes"""
         self.tabla_clientes.rows.clear()
-        
         clientes = self.banco.listar_clientes()
-        
+
         if not clientes:
-            # Mostrar mensaje si no hay clientes
             self.tabla_clientes.rows.append(
                 ft.DataRow(
                     cells=[
-                        ft.DataCell(ft.Text("No hay clientes registrados", 
-                                          italic=True, 
-                                          color=ft.Colors.GREY_600,
-                                          colspan=4))
+                        ft.DataCell(
+                            ft.Container(
+                                ft.Text(
+                                    "No hay clientes registrados",
+                                    italic=True,
+                                    color=ft.Colors.GREY_600,
+                                    size=12,
+                                ),
+                                padding=ft.padding.symmetric(vertical=6, horizontal=10),
+                                alignment=ft.alignment.center_left,
+                                expand=True,
+                            )
+                        )
                     ]
                 )
             )
@@ -82,19 +92,49 @@ class ClienteListView:
                 self.tabla_clientes.rows.append(
                     ft.DataRow(
                         cells=[
-                            ft.DataCell(ft.Text(cliente.dni)),
-                            ft.DataCell(ft.Text(cliente.nombre)),
-                            ft.DataCell(ft.Text(cliente.apellido)),
                             ft.DataCell(
-                                ft.IconButton(
-                                    icon=ft.Icons.VISIBILITY,
-                                    tooltip="Ver detalle",
-                                    on_click=lambda e, d=cliente.dni: self.ver_detalle_cliente(d)
+                                ft.Container(
+                                    ft.Text(cliente.dni, size=12),
+                                    padding=ft.padding.symmetric(vertical=6, horizontal=10),
+                                    alignment=ft.alignment.center_left,
+                                    expand=True,
+                                )
+                            ),
+                            ft.DataCell(
+                                ft.Container(
+                                    ft.Text(cliente.nombre, size=12),
+                                    padding=ft.padding.symmetric(vertical=6, horizontal=10),
+                                    alignment=ft.alignment.center_left,
+                                    expand=True,
+                                )
+                            ),
+                            ft.DataCell(
+                                ft.Container(
+                                    ft.Text(cliente.apellido, size=12),
+                                    padding=ft.padding.symmetric(vertical=6, horizontal=10),
+                                    alignment=ft.alignment.center_left,
+                                    expand=True,
+                                )
+                            ),
+                            ft.DataCell(
+                                ft.Container(
+                                    ft.IconButton(
+                                        icon=ft.Icons.VISIBILITY,
+                                        tooltip="Ver detalle",
+                                        icon_size=18,
+                                        on_click=lambda e, d=cliente.dni: self.ver_detalle_cliente(d),
+                                    ),
+                                    padding=ft.padding.symmetric(vertical=2, horizontal=2),
+                                    alignment=ft.alignment.center,
+                                    expand=True,
                                 )
                             ),
                         ]
                     )
                 )
+        
+        # Forzar actualización visual
+        self.page.update()
     
     def render(self):
         """Renderiza la vista completa"""
@@ -102,14 +142,14 @@ class ClienteListView:
         
         return ft.Column(
             controls=[
-                ft.Text("Gestión de Clientes", size=28, weight=ft.FontWeight.BOLD),
+                ft.Text("Gestión de Clientes", size=20, weight=ft.FontWeight.BOLD),
                 ft.Divider(),
                 
                 # Formulario para crear cliente
                 ft.Card(
                     content=ft.Container(
                         content=ft.Column([
-                            ft.Text("Nuevo Cliente", size=18, weight=ft.FontWeight.BOLD),
+                            ft.Text("Nuevo Cliente", size=14, weight=ft.FontWeight.BOLD),
                             ft.Row([
                                 self.nombre_input,
                                 self.apellido_input,
@@ -122,29 +162,28 @@ class ClienteListView:
                             ], wrap=True),
                             self.mensaje,
                         ]),
-                        padding=20,
+                        padding=10,
                     ),
                     elevation=2,
                 ),
                 
-                ft.Container(height=20),
+                ft.Container(height=10),
                 
                 # Tabla de clientes
                 ft.Card(
                     content=ft.Container(
                         content=ft.Column([
-                            ft.Text("Listado de Clientes", size=18, weight=ft.FontWeight.BOLD),
+                            ft.Text("Listado de Clientes", size=14, weight=ft.FontWeight.BOLD),
                             ft.Container(
                                 content=self.tabla_clientes,
-                                padding=10,
+                                padding=0,  # sin padding adicional para que los bordes sean precisos
                             ),
                         ]),
-                        padding=20,
+                        padding=10,
                     ),
                     elevation=2,
                 ),
             ],
-            spacing=10,
+            spacing=5,
             scroll=ft.ScrollMode.AUTO,
         )
-
