@@ -6,6 +6,10 @@ from views.cliente_detail_view import ClienteDetailView
 
 def main(page: ft.Page):
     page.title = "Sistema Bancario - TP Integrador Final"
+     # Establecer el favicon
+    page.client_storage.set("favicon", "/assets/favicon.png")
+    
+   
     page.padding = 0
     page.window_width = 1200
     page.window_height = 800
@@ -56,6 +60,8 @@ def main(page: ft.Page):
         
         # Renderizar con el layout
         page.add(layout.render(contenido))
+            # Ocultar splash cuando esté listo
+        # page.splash = None
         page.update()
     
     # Configurar routing
@@ -64,4 +70,8 @@ def main(page: ft.Page):
 
 if __name__ == "__main__":
     # ft.app(target=main)
-    ft.app(target=main, view=ft.WEB_BROWSER)
+    ft.app(
+        target=main, 
+        view=ft.WEB_BROWSER,
+        assets_dir="assets"
+        )
