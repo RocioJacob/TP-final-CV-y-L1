@@ -1,12 +1,16 @@
-import traceback
+import flet as ft
 from almacenamiento import Banco
-from interfaz_ui import run_flet_app
-# Importamos CuentaAhorro para los datos de ejemplo
-from cuenta import CuentaAhorro, CuentaCorriente 
+from components.layout import BaseLayout
+from views.cliente_list_view import ClienteListView
+from views.cliente_detail_view import ClienteDetailView
 
-# -------------------- SCRIPT PRINCIPAL --------------------
-
-if __name__ == "__main__":
+def main(page: ft.Page):
+    page.title = "Sistema Bancario - TP Integrador Final"
+    page.padding = 0
+    page.window_width = 1200
+    page.window_height = 800
+    
+    # Inicializar banco
     banco = Banco()
     
     # Pre-cargar datos de ejemplo (opcional)
@@ -16,22 +20,48 @@ if __name__ == "__main__":
         ca.ingresar(1000)
         cc = banco.crear_cuenta_corriente(c1.dni, limite_descubierto=500.0)
         cc.ingresar(500)
-    except Exception as e:
-        # Se ignora si ya existe el cliente (debería ser la primera vez)
-        print("Error pre-cargando datos de ejemplo (puede ser normal si ya existe):", e)
+        cc.retirar(200)
+    except:
         pass
+    
+    # Layout base
+    layout = BaseLayout(page)
+    
+    def navigate(vista: str, dni: str = None):
+        """Navega entre vistas"""
+        if vista == "listado":
+            page.go("/")
+        elif vista == "detalle" and dni:
+            page.go(f"/detalle/{dni}")
+    
+    def route_change(route):
+        """Maneja los cambios de ruta"""
+        page.controls.clear()
+        
+        # Determinar qué vista mostrar
+        if page.route == "/":
+            # Vista listado de clientes
+            vista = ClienteListView(page, banco, navigate)
+            contenido = vista.render()
+        elif page.route.startswith("/detalle/"):
+            # Vista detalle de cliente
+            dni = page.route.split("/")[-1]
+            try:
+                vista = ClienteDetailView(page, banco, dni, navigate)
+                contenido = vista.render()
+            except ValueError:
+                contenido = ft.Text("Cliente no encontrado", size=24, color=ft.colors.RED_700)
+        else:
+            contenido = ft.Text("Página no encontrada", size=24)
+        
+        # Renderizar con el layout
+        page.add(layout.render(contenido))
+        page.update()
+    
+    # Configurar routing
+    page.on_route_change = route_change
+    page.go("/")
 
-    # Ejecuta la app Flet si está disponible
-    try:
-        run_flet_app(banco)
-    except ImportError as e:
-        print("\n=======================================================")
-        print("❌ Error: Módulo faltante para la Interfaz Gráfica.")
-        print("Para ejecutar la UI instale **flet** (y opcionalmente **fpdf2** para el PDF).")
-        print("Comandos recomendados:")
-        print("pip install flet")
-        print("pip install fpdf2")
-        print("=======================================================\n")
-    except Exception as e:
-        print("Error lanzando la UI:", e)
-        print(traceback.format_exc())
+if __name__ == "__main__":
+    # ft.app(target=main)
+    ft.app(target=main, view=ft.WEB_BROWSER)
