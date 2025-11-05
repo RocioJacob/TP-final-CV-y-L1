@@ -147,7 +147,9 @@ class ClienteDetailView:
     def generar_pdf(self, e):
         try:
             pdf_gen = PDFGenerator(f"cliente_{self.dni_cliente}_{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}.pdf")
-            archivo = pdf_gen.generar_pdf_cliente(self.cliente, self.cuentas)
+            cuentas_actualizadas = self.banco.listar_cuentas_por_cliente(self.dni_cliente)
+            archivo = pdf_gen.generar_pdf_cliente(self.cliente, cuentas_actualizadas)
+            # archivo = pdf_gen.generar_pdf_cliente(self.cliente, self.cuentas)
             self.mensaje.value = f"✅ PDF generado: {archivo}"
             self.mensaje.color = ft.Colors.GREEN_700
             self.page.update()
