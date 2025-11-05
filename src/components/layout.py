@@ -1,5 +1,5 @@
 import flet as ft
-
+import datetime
 class BaseLayout:
     """Layout base con header y footer reutilizable"""
     
@@ -21,40 +21,35 @@ class BaseLayout:
                 ],
                 alignment=ft.MainAxisAlignment.CENTER,
             ),
-            bgcolor=ft.Colors.BLUE_700,
+            bgcolor=ft.Colors.INDIGO_300,
             padding=20,
+            width=float('inf')
         )
     
     def create_footer(self):
         """Footer con copyright"""
         return ft.Container(
-            content=ft.Column(
+            content=ft.Row(
                 controls=[
                     ft.Text(
-                        "© 2024 Sistema Bancario - Laboratorio I",
+                        f"© {datetime.datetime.now().year} Sistema Bancario - Laboratorio I  |  Desarrollado por: [Tu Nombre y el de tu compañera]",
                         size=12,
                         color=ft.Colors.WHITE70,
                         text_align=ft.TextAlign.CENTER,
                     ),
-                    ft.Text(
-                        "Desarrollado por: [Tu Nombre y el de tu compañera]",
-                        size=11,
-                        color=ft.Colors.WHITE60,
-                        text_align=ft.TextAlign.CENTER,
-                    ),
                 ],
-                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                spacing=5,
+                alignment=ft.MainAxisAlignment.CENTER,
             ),
-            bgcolor=ft.Colors.BLUE_900,
+            bgcolor=ft.Colors.INDIGO_300,
             padding=15,
+            width=float('inf'),  # Ocupa todo el ancho disponible
         )
     
     def create_container(self, content):
         """Contenedor centrado como Bootstrap"""
         return ft.Container(
             content=content,
-            padding=30,
+            padding=20,
             expand=True,
             alignment=ft.alignment.top_center,
         )
