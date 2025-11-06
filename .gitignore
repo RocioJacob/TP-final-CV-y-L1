@@ -1,2 +1,5 @@
 /venv
 /src/__pycache__/
+/src/reports/__pycache__/
+/tests/__pycache__/
+/src/views/__pycache__/
